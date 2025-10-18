@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b296972a21a245dda4527d76f156b294, type: 3}
+  m_Name: TagsTreeConfig
+  m_EditorClassIdentifier: 
+  RootTag: 0
+  Connections:
+  - ParentTag: 0
+    ChildTag: 6
+    Weight: 4
+  - ParentTag: 6
+    ChildTag: 5
+    Weight: 1
+  - ParentTag: 5
+    ChildTag: 13
+    Weight: 1
+  - ParentTag: 0
+    ChildTag: 2
+    Weight: 1
+  - ParentTag: 0
+    ChildTag: 3
+    Weight: 1
+  - ParentTag: 0
+    ChildTag: 1
+    Weight: 3
+  - ParentTag: 0
+    ChildTag: 4
+    Weight: 4
+  - ParentTag: 0
+    ChildTag: 8
+    Weight: 5
+  - ParentTag: 0
+    ChildTag: 9
+    Weight: 2
+  - ParentTag: 9
+    ChildTag: 7
+    Weight: 3
+  - ParentTag: 7
+    ChildTag: 10
+    Weight: 2
+  - ParentTag: 7
+    ChildTag: 12
+    Weight: 2
+  - ParentTag: 9
+    ChildTag: 11
+    Weight: 3
+  - ParentTag: 9
+    ChildTag: 16
+    Weight: 3
+  - ParentTag: 9
+    ChildTag: 14
+    Weight: 3
+  - ParentTag: 9
+    ChildTag: 15
+    Weight: 3
+  - ParentTag: 9
+    ChildTag: 26
+    Weight: 3
+  - ParentTag: 9
+    ChildTag: 25
+    Weight: 3
+  - ParentTag: 9
+    ChildTag: 24
+    Weight: 3
+  - ParentTag: 0
+    ChildTag: 23
+    Weight: 1
+  - ParentTag: 9
+    ChildTag: 22
+    Weight: 3
+  - ParentTag: 9
+    ChildTag: 21
+    Weight: 3
+  - ParentTag: 9
+    ChildTag: 19
+    Weight: 3
+  - ParentTag: 9
+    ChildTag: 18
+    Weight: 3
+  - ParentTag: 9
+    ChildTag: 17
+    Weight: 3
+  - ParentTag: 0
+    ChildTag: 20
+    Weight: 3

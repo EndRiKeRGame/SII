@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27334f86aee54d1ba3f855e360580625, type: 3}
+  m_Name: ItemsConfig
+  m_EditorClassIdentifier: 
+  _items:
+  - Name: "\u0413\u0435\u0440\u043E\u0438 2"
+    Price: 1490
+    Tags: 0100000002000000
+    AvgPlayTime: 60
+    MinimumAge: 12
+    Sprite: {fileID: 0}
+  - Name: "\u0423\u0436\u0430\u0441 \u0410\u0440\u043A\u0445\u044D\u043C\u0430. \u041A\u0430\u0440\u0442\u043E\u0447\u043D\u0430\u044F
+      \u0438\u0433\u0440\u0430"
+    Price: 2990
+    Tags: 0a000000080000000900000007000000
+    AvgPlayTime: 80
+    MinimumAge: 14
+    Sprite: {fileID: 0}
+  - Name: "\u0423\u0436\u0430\u0441 \u0410\u0440\u043A\u0445\u044D\u043C\u0430: \u0422\u0430\u0439\u043D\u043E\u0435
+      \u043F\u043E\u0441\u043B\u0430\u043D\u0438\u0435"
+    Price: 1490
+    Tags: 0700000003000000
+    AvgPlayTime: 45
+    MinimumAge: 12
+    Sprite: {fileID: 0}
+  - Name: "\u0411\u0443\u043D\u043A\u0435\u0440"
+    Price: 2990
+    Tags: 03000000
+    AvgPlayTime: 60
+    MinimumAge: 18
+    Sprite: {fileID: 0}
+  - Name: "\u041C\u0430\u043D\u0447\u043A\u0438\u043D"
+    Price: 1290
+    Tags: 030000000900000011000000
+    AvgPlayTime: 30
+    MinimumAge: 12
+    Sprite: {fileID: 0}
+  - Name: "\u041A\u0442\u0443\u043B\u0445\u0443: \u0421\u043C\u0435\u0440\u0442\u044C
+      \u043C\u043E\u0436\u0435\u0442 \u0443\u043C\u0435\u0440\u0435\u0442\u044C"
+    Price: 10990
+    Tags: 0900000007000000
+    AvgPlayTime: 120
+    MinimumAge: 16
+    Sprite: {fileID: 0}
+  - Name: "\u0423\u0436\u0430\u0441 \u0410\u0440\u043A\u0445\u044D\u043C\u0430. \u0422\u0440\u0435\u0442\u044C\u044F
+      \u0440\u0435\u0434\u0430\u043A\u0446\u0438\u044F"
+    Price: 6990
+    Tags: 040000000700000009000000
+    AvgPlayTime: 180
+    MinimumAge: 14
+    Sprite: {fileID: 0}
+  - Name: "Ticket to Ride: \u0415\u0432\u0440\u043E\u043F\u0430"
+    Price: 3990
+    Tags: 020000001200000009000000
+    AvgPlayTime: 60
+    MinimumAge: 8
+    Sprite: {fileID: 0}
+  - Name: "\u041D\u0435\u043F\u043E\u0441\u0442\u0438\u0436\u0438\u043C\u043E\u0435"
+    Price: 6990
+    Tags: 040000000700000009000000
+    AvgPlayTime: 240
+    MinimumAge: 13
+    Sprite: {fileID: 0}
+  - Name: "\u041A\u043E\u0441\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u043A\u043E\u043D\u0442\u0430\u043A\u0442"
+    Price: 5990
+    Tags: 130000000100000009000000
+    AvgPlayTime: 120
+    MinimumAge: 14
+    Sprite: {fileID: 0}
+  - Name: "\u0411\u0438\u0442\u0432\u0430 \u0437\u0430 \u0420\u043E\u043A\u0443\u0433\u0430\u043D "
+    Price: 3490
+    Tags: 040000001400000001000000
+    AvgPlayTime: 90
+    MinimumAge: 13
+    Sprite: {fileID: 0}
+  - Name: "\u041C\u0435\u0441\u0442\u043E \u043F\u0440\u0435\u0441\u0442\u0443\u043F\u043B\u0435\u043D\u0438\u044F"
+    Price: 2990
+    Tags: 1500000009000000
+    AvgPlayTime: 90
+    MinimumAge: 12
+    Sprite: {fileID: 0}
+  - Name: "\u0426\u0438\u0442\u0430\u0434\u0435\u043B\u0438 \u0414\u0435\u043B\u044E\u043A\u0441"
+    Price: 2990
+    Tags: 020000001600000017000000
+    AvgPlayTime: 60
+    MinimumAge: 10
+    Sprite: {fileID: 0}
+  - Name: "7 \u0447\u0443\u0434\u0435\u0441"
+    Price: 4990
+    Tags: 180000000100000002000000
+    AvgPlayTime: 30
+    MinimumAge: 7
+    Sprite: {fileID: 0}
+  - Name: "\u041C\u0430\u0447\u0438 \u041A\u043E\u0440\u043E"
+    Price: 1290
+    Tags: 0200000019000000
+    AvgPlayTime: 45
+    MinimumAge: 7
+    Sprite: {fileID: 0}
+  - Name: "\u0411\u044D\u043D\u0433"
+    Price: 1290
+    Tags: 030000001a000000
+    AvgPlayTime: 50
+    MinimumAge: 7
+    Sprite: {fileID: 0}
+  <MaxItem>k__BackingField:
+    Name: Default Board Game
+    Price: 10990
+    Tags: 
+    AvgPlayTime: 240
+    MinimumAge: 18
+    Sprite: {fileID: 0}
+  <MinItem>k__BackingField:
+    Name: Default Board Game
+    Price: 1290
+    Tags: 
+    AvgPlayTime: 30
+    MinimumAge: 7
+    Sprite: {fileID: 0}
+  <AvgItem>k__BackingField:
+    Name: Default Board Game
+    Price: 3889
+    Tags: 
+    AvgPlayTime: 84
+    MinimumAge: 11
+    Sprite: {fileID: 0}
