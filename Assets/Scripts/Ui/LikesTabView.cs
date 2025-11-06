@@ -8,6 +8,8 @@ using UnityEngine.Serialization;
 
 public class LikesTabView : MonoBehaviour
 {
+    public Button ToggleButton => _toggleButton;
+    
     [Header("References")]
     [SerializeField]
     private Button _toggleButton;
@@ -47,7 +49,6 @@ public class LikesTabView : MonoBehaviour
 
     private void Awake()
     {
-        _toggleButton.onClick.AddListener(ToggleTab);
         CalculatePositions();
         InitializeTab();
         
@@ -71,7 +72,7 @@ public class LikesTabView : MonoBehaviour
         _isVisible = true;
     }
 
-    private void ToggleTab()
+    public void ToggleTab()
     {
         if (_animationSequence.isAlive)
             return;
@@ -123,7 +124,7 @@ public class LikesTabView : MonoBehaviour
     public void ClearItems()
     {
         foreach (var item in _contentItems)
-            Destroy(item);
+            Destroy(item.gameObject);
         
         _contentItems.Clear();
         
@@ -144,6 +145,11 @@ public class LikesTabView : MonoBehaviour
         
         _isVisible = false;
         AnimateTab();
+    }
+    
+    public bool IsVisible()
+    {
+        return _isVisible;
     }
 
     private void OnDestroy()

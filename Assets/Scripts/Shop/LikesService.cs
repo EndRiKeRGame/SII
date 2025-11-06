@@ -40,6 +40,11 @@ namespace Shop
         {
             if (ContainsInLikesDislikes(item))
             {
+                if (IsDislike(item))
+                    TryRemoveDislike(item);
+                else
+                    TryRemoveLike(item);
+                
                 _console.LogMessage($"Item already in Likes or Dislikes! {item.Name}");
                 return false;
             }
@@ -49,7 +54,7 @@ namespace Shop
         
         public bool TryRemoveLike(Item item)
         {
-            if (!ContainsInLikes(item))
+            if (!IsLike(item))
             {
                 _console.LogMessage($"Item not in Likes! {item.Name}");
                 return false;
@@ -62,6 +67,11 @@ namespace Shop
         {
             if (ContainsInLikesDislikes(item))
             {
+                if (IsDislike(item))
+                    TryRemoveDislike(item);
+                else
+                    TryRemoveLike(item);
+                
                 _console.LogMessage($"Item already in Likes or Dislikes! {item.Name}");
                 return false;
             }
@@ -71,7 +81,7 @@ namespace Shop
         
         public bool TryRemoveDislike(Item item)
         {
-            if (!ContainsInDislikes(item))
+            if (!IsDislike(item))
             {
                 _console.LogMessage($"Item not in Dislikes! {item.Name}");
                 return false;
@@ -82,15 +92,15 @@ namespace Shop
 
         private bool ContainsInLikesDislikes(Item item)
         {
-            return ContainsInLikes(item) || ContainsInDislikes(item);
+            return IsLike(item) || IsDislike(item);
         }
         
-        private bool ContainsInLikes(Item item)
+        public bool IsLike(Item item)
         {
             return _likesStorage.Likes.Contains(item);
         }
         
-        private bool ContainsInDislikes(Item item)
+        public bool IsDislike(Item item)
         {
             return _likesStorage.Dislikes.Contains(item);
         }

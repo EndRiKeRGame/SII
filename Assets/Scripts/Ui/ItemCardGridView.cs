@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Common;
+using Common.Configs;
 using Math;
 using Shop;
 using UnityEngine;
@@ -12,17 +16,26 @@ public class ItemCardGridView : MonoBehaviour
     
     [SerializeField]
     private ItemCardView _cardPrefab;
-    
-    private ItemDistance _itemDistance;
+
+    private Dictionary<Item, ItemCardView> _cardViews = new();
     private LikesService _likesService;
+    private ItemsConfig _itemsConfig;
+    private ItemDistanceWithLikes _itemDistanceWithLikes;
 
     [Inject]
     public void Construct(
-        ItemDistance itemDistance,
-        LikesService likesService)
+        LikesService likesService,
+        ItemsConfig itemStorage,
+        ItemDistanceWithLikes itemDistanceWithLikes
+        )
     {
-        _itemDistance = itemDistance;
         _likesService = likesService;
+        _itemsConfig = itemStorage;
+        _itemDistanceWithLikes = itemDistanceWithLikes;
+        _itemDistanceWithLikes.CalculateProximityForAllOnLikes();
+        
+        _likesService.OnLikesChanged += UpdateItemsPositions;
+        _likesService.OnDislikesChanged += UpdateItemsPositions;
     }
     
     public void SetupItems(Item[] items)
@@ -32,6 +45,39 @@ public class ItemCardGridView : MonoBehaviour
             ItemCardView view = Instantiate(_cardPrefab, _gridLayout.transform);
             view.SetupItem(item);
             view.SetupButtons(() => OnLike(item), () => OnDislike(item));
+            
+            _cardViews.Add(item, view);
+        }
+    }
+    
+    public void UpdateItemsPositions()
+    {
+        var proximity = _itemDistanceWithLikes.ProximityOnLikes;
+        var likes = _likesService.Likes;
+        var dislikes = _likesService.Dislikes;
+
+        if (proximity.Count + likes.Count + dislikes.Count != _cardViews.Count)
+            return;
+        
+        int currentPos = 0;
+        foreach (var like in likes)
+        {
+            _cardViews[like].transform.SetSiblingIndex(currentPos++);
+            _cardViews[like].SetProximityValue(100f);
+        }
+        
+        var sortedProximity = proximity.OrderByDescending(x => x.Value);
+
+        foreach (var (item, prox) in sortedProximity)
+        {
+            _cardViews[item].transform.SetSiblingIndex(currentPos++);
+            _cardViews[item].SetProximityValue(prox);
+        }
+
+        foreach (var dislike in dislikes)
+        {
+            _cardViews[dislike].transform.SetSiblingIndex(currentPos++);
+            _cardViews[dislike].SetProximityValue(0f);
         }
     }
 
@@ -45,5 +91,15 @@ public class ItemCardGridView : MonoBehaviour
     {
         _likesService.TryAddDislike(item);
         _likesService.InvokeDislikesChanged();
+    }
+
+    public void OnDestroy()
+    {
+        foreach (var (_, view) in _cardViews)
+        {
+            Destroy(view.gameObject);
+        }
+        
+        _cardViews.Clear();
     }
 }

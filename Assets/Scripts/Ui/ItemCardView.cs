@@ -31,6 +31,9 @@ public class ItemCardView : MonoBehaviour
     [SerializeField]
     private Button _dislikeBtn;
     
+    [SerializeField]
+    private TMP_Text _proximityValue;
+    
     public string Name => _itemName.text;
     
     private UnityAction _onLike;
@@ -45,6 +48,11 @@ public class ItemCardView : MonoBehaviour
         _itemNumOfPlayers.text = item.NumOfPlayers.ToString();
         _itemAvgTime.text = item.AvgPlayTime.ToString();
         _itemMinAge.text = item.MinimumAge.ToString();
+    }
+    
+    public void SetProximityValue(float value)
+    {
+        _proximityValue.text = value.ToString();
     }
 
     public void SetupButtons(Action onLike, Action onDislike)

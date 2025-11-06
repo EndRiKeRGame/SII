@@ -32,9 +32,9 @@ namespace Boot
             
             builder.RegisterComponentInHierarchy<LikesTabService>();
             builder.RegisterComponentInHierarchy<AdvancedHeatmap>();
-            builder.RegisterComponentInHierarchy<GridSmoothHeatmap>();
             builder.RegisterComponentInHierarchy<ShopInitializer>();
             builder.RegisterComponentInHierarchy<ItemDistance>();
+            builder.RegisterComponentInHierarchy<ItemDistanceWithLikes>();
             builder.RegisterComponentInHierarchy<ItemCardGridView>();
         }
     }

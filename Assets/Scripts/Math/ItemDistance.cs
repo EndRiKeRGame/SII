@@ -9,6 +9,7 @@ using MyNamespace;
 using TriInspector;
 using Ui;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VContainer;
 
 namespace Math
@@ -18,23 +19,20 @@ namespace Math
         private DebugConsoleView _console;
         private ItemsConfig _itemsConfig;
         private AdvancedHeatmap _heatmap;
-        private GridSmoothHeatmap _gridSmoothHeatmap;
-        private MatrixTree _matrixTree;
+        public MatrixTree MatrixTree { get; set; }
 
         [Inject]
         public void Construct(
             ItemsConfig itemsConfig,
             DebugConsoleView console,
             AdvancedHeatmap heatmap,
-            GridSmoothHeatmap gridSmoothHeatmap,
             MatrixTreeConfig matrixTreeConfig)
         {
             _console = console;
             _itemsConfig = itemsConfig;
             _heatmap = heatmap;
-            _gridSmoothHeatmap = gridSmoothHeatmap;
-            _matrixTree = new MatrixTree(matrixTreeConfig.RootTag);
-            _matrixTree.InitializeFromConfig(matrixTreeConfig);
+            MatrixTree = new MatrixTree(matrixTreeConfig.RootTag);
+            MatrixTree.InitializeFromConfig(matrixTreeConfig);
         }
 
         // FOR NUMERIC
@@ -294,11 +292,10 @@ namespace Math
             return array;
         }
 
-        public float[] CalculateEuclidDistancesForOne(Item first)
+        public float[] CalculateEuclidDistancesForOne(Item first, Item[] others)
         {
             _console.LogMessage($"\n=== Calculating Euclidean Distances for {first.Name} ===");
-            var items = _itemsConfig.GetAllItems();
-            var length = items.Length;
+            var length = others.Length;
             Item maxProximityItem = new();
             float maxProximity = 0f;
 
@@ -306,7 +303,7 @@ namespace Math
 
             for (int i = 0; i < length; ++i)
             {
-                var second = items[i];
+                var second = others[i];
                 
                 if (first == second)
                 {
@@ -372,11 +369,10 @@ namespace Math
             return array;
         }
 
-        public float[] CalculateTreeDistancesForOne(Item first)
+        public float[] CalculateTreeDistancesForOne(Item first, Item[] others)
         {
             _console.LogMessage($"\n=== Calculating Tree Distances for {first.Name} ===");
-            var items = _itemsConfig.GetAllItems();
-            var length = items.Length;
+            var length = others.Length;
             Item maxProximityItem = new();
             float maxProximity = 0f;
 
@@ -384,7 +380,7 @@ namespace Math
 
             for (int i = 0; i < length; ++i)
             {
-                var second = items[i];
+                var second = others[i];
                 
                 if (first == second)
                     continue;
@@ -418,7 +414,7 @@ namespace Math
 
                 foreach (var secondTag in second.Tags)
                 {
-                    float dist = _matrixTree.CalculateTotalDistanceFromRoot(firstTag, secondTag);
+                    float dist = MatrixTree.CalculateTotalDistanceFromRoot(firstTag, secondTag);
 
                     if (dist < minEl)
                         minEl = dist;
@@ -432,20 +428,22 @@ namespace Math
 
             return min / max;
         }
-
         
-        public void CompletedProximityForOne(Item item)
+        public float[] CompletedProximityForOne(Item one, Item[] others)
         {
             _console.LogMessage("\n=== Calculating Combined Proximity ===");
-            var items = _itemsConfig.GetAllItems();
-            var length = items.Length;
+
+            if (others == null || others.Length == 0)
+                return Array.Empty<float>();
+            
+            var length = others.Length;
             float maxValue = 0f;
             int maxValueIndex = 0;
 
-            float[] numArray = CalculateEuclidDistancesForOne(item);
-            float[] typeArray = CalculateTreeDistancesForOne(item);
+            float[] numArray = CalculateEuclidDistancesForOne(one, others);
+            float[] typeArray = CalculateTreeDistancesForOne(one, others);
 
-            var total = SummaryArray(numArray, typeArray);
+            float[] total = SummaryArray(numArray, typeArray);
             
             for (int i = 0; i < length; ++i)
             {
@@ -456,8 +454,10 @@ namespace Math
                 }
             }
             
-            PrintArray(total, $"Combined Proximity Array for {item.Name}");
-            _console.LogMessage($"\nMost similar item to {item.Name}: {items[maxValueIndex].Name} (Distance: {maxValue:F2})");
+            PrintArray(total, $"Combined Proximity Array for {one.Name} on specific items");
+            _console.LogMessage($"\nMost similar item to {one.Name}: {others[maxValueIndex].Name} (Distance: {maxValue:F2})");
+
+            return total;
         }
     }
 }
