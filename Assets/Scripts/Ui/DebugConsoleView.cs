@@ -37,7 +37,7 @@ public class DebugConsoleView : MonoBehaviour
         _clearButton.onClick.AddListener(ClearTextOutput);
         _log.fontSize = SMALL_FONT;
         ClearTextOutput();
-        ShowScroll();
+        HideScroll();
     }
 
     private void OnDestroy()

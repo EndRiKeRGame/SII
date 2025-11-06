@@ -45,7 +45,7 @@ public class ItemCardView : MonoBehaviour
         _itemName.text = item.Name;
         
         _itemPrice.text = item.Price.ToString();
-        _itemNumOfPlayers.text = item.NumOfPlayers.ToString();
+        _itemNumOfPlayers.text = $"{item.NumOfPlayers.Start.Value} - {item.NumOfPlayers.End.Value}";
         _itemAvgTime.text = item.AvgPlayTime.ToString();
         _itemMinAge.text = item.MinimumAge.ToString();
     }

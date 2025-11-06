@@ -27,8 +27,10 @@ namespace Boot
             builder.RegisterInstance(_likesStorage);
             
             builder.RegisterComponentInHierarchy<DebugConsoleView>();
+            builder.RegisterComponentInHierarchy<FiltersView>();
             
             builder.Register<LikesService>(Lifetime.Singleton);
+            builder.Register<FiltersService>(Lifetime.Singleton);
             
             builder.RegisterComponentInHierarchy<LikesTabService>();
             builder.RegisterComponentInHierarchy<AdvancedHeatmap>();

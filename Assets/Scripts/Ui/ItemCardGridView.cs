@@ -17,25 +17,29 @@ public class ItemCardGridView : MonoBehaviour
     [SerializeField]
     private ItemCardView _cardPrefab;
 
-    private Dictionary<Item, ItemCardView> _cardViews = new();
     private LikesService _likesService;
     private ItemsConfig _itemsConfig;
     private ItemDistanceWithLikes _itemDistanceWithLikes;
+    private FiltersService _filtersService;
+    
+    private Dictionary<Item, ItemCardView> _cardViews = new();
 
     [Inject]
     public void Construct(
         LikesService likesService,
+        FiltersService filtersService,
         ItemsConfig itemStorage,
-        ItemDistanceWithLikes itemDistanceWithLikes
-        )
+        ItemDistanceWithLikes itemDistanceWithLikes)
     {
         _likesService = likesService;
         _itemsConfig = itemStorage;
+        _filtersService = filtersService;
         _itemDistanceWithLikes = itemDistanceWithLikes;
         _itemDistanceWithLikes.CalculateProximityForAllOnLikes();
         
         _likesService.OnLikesChanged += UpdateItemsPositions;
         _likesService.OnDislikesChanged += UpdateItemsPositions;
+        _filtersService.OnFilterChanged += FilterItems;
     }
     
     public void SetupItems(Item[] items)
@@ -48,6 +52,48 @@ public class ItemCardGridView : MonoBehaviour
             
             _cardViews.Add(item, view);
         }
+    }
+
+    public void FilterItems(FilterItem filter)
+    {
+        foreach (var (item, view) in _cardViews)
+        {
+            view.gameObject.SetActive(CheckItemForFilter(item, filter));
+        }
+    }
+
+    private void ShowAllItems()
+    {
+        foreach (var (_, view) in _cardViews)
+        {
+            view.gameObject.SetActive(true);
+        }
+    }
+
+    private bool CheckItemForFilter(Item item, FilterItem filter)
+    {
+        if (!item.Name.Contains(filter.Name))
+            return false;
+
+        if (item.Price < filter.PriceFrom || item.Price > filter.PriceTo)
+            return false;
+
+        if (item.NumOfPlayers.Start.Value < filter.NumOfPlayersFrom ||
+            item.NumOfPlayers.End.Value > filter.NumOfPlayersTo)
+            return false;
+
+        if (item.MinimumAge < filter.MinAge)
+            return false;
+        
+        if (item.AvgPlayTime < filter.AvgPlayTimeFrom ||
+            item.AvgPlayTime > filter.AvgPlayTimeTo)
+            return false;
+
+        foreach (var itemTag in filter.Tags)
+            if (!item.Tags.Contains(itemTag))
+                return false;
+
+        return true;
     }
     
     public void UpdateItemsPositions()
@@ -96,9 +142,7 @@ public class ItemCardGridView : MonoBehaviour
     public void OnDestroy()
     {
         foreach (var (_, view) in _cardViews)
-        {
             Destroy(view.gameObject);
-        }
         
         _cardViews.Clear();
     }

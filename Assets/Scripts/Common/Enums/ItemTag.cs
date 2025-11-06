@@ -38,4 +38,12 @@
         Бэнг,
         
     }
+    
+    public static class StringToTag
+    {
+        public static ItemTag Convert(this string str)
+        {
+            return (ItemTag)System.Enum.Parse(typeof(ItemTag), str);
+        }
+    }
 }
