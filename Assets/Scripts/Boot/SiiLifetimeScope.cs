@@ -1,4 +1,6 @@
 ﻿using Common.Configs;
+using Dev;
+using History;
 using Math;
 using Shop;
 using Shop.Configs;
@@ -19,6 +21,10 @@ namespace Boot
 
         [SerializeField]
         private LikesStorage _likesStorage;
+        
+        private LikesService _likesService;
+        private ItemDistanceWithLikes _itemDistanceWithLikes;
+        private FiltersService _filtersService;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -26,18 +32,20 @@ namespace Boot
             builder.RegisterInstance(_tagsTree);
             builder.RegisterInstance(_likesStorage);
             
-            builder.RegisterComponentInHierarchy<DebugConsoleView>();
             builder.RegisterComponentInHierarchy<FiltersView>();
             
+            builder.Register<HistoryService>(Lifetime.Singleton);
             builder.Register<LikesService>(Lifetime.Singleton);
             builder.Register<FiltersService>(Lifetime.Singleton);
             
             builder.RegisterComponentInHierarchy<LikesTabService>();
-            builder.RegisterComponentInHierarchy<AdvancedHeatmap>();
+            builder.RegisterComponentInHierarchy<AdvancedHeatmapView>();
             builder.RegisterComponentInHierarchy<ShopInitializer>();
             builder.RegisterComponentInHierarchy<ItemDistance>();
             builder.RegisterComponentInHierarchy<ItemDistanceWithLikes>();
             builder.RegisterComponentInHierarchy<ItemCardGridView>();
+            
+            builder.RegisterComponentInHierarchy<InputHandler>();
         }
     }
 }

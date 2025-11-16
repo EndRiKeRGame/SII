@@ -3,16 +3,16 @@ using Common.Enums;
 
 namespace Common
 {
-    public class FilterItem
+    public struct FilterItem
     {
-        public string Name { get; set; } = "";
-        public int PriceFrom { get; set; } = -1;
-        public int PriceTo { get; set; } = int.MaxValue;
-        public int NumOfPlayersFrom { get; set; } = -1;
-        public int NumOfPlayersTo { get; set; } = int.MaxValue;
-        public int MinAge { get; set; } = -1;
-        public int AvgPlayTimeFrom { get; set; } = -1;
-        public int AvgPlayTimeTo { get; set; } = int.MaxValue;
-        public List<ItemTag> Tags { get; set; } = new();
+        public string Name;
+        public int PriceFrom;
+        public int PriceTo;
+        public int NumOfPlayersFrom;
+        public int NumOfPlayersTo;
+        public int MinAge;
+        public int AvgPlayTimeFrom;
+        public int AvgPlayTimeTo;
+        public List<ItemTag> Tags;
     }
 }

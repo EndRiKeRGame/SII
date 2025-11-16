@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Common;
 using Common.Configs;
-using Common.Enums;
-using Math.Enums;
-using MyNamespace;
 using Shop;
 using TriInspector;
-using Ui;
 using UnityEngine;
 using VContainer;
 
@@ -17,8 +12,6 @@ namespace Math
 {
     public class ItemDistanceWithLikes : MonoBehaviour
     {
-        public Dictionary<Item, float> ProximityOnLikes { get; private set; } = null;
-        
         private ItemsConfig _itemsConfig;
         private LikesService _likeService;
         private ItemDistance _baseCalculator;
@@ -32,17 +25,17 @@ namespace Math
             _baseCalculator = baseCalculator;
             _itemsConfig = itemsConfig;
             _likeService = likeService;
-            
-            _likeService.OnLikesChanged += CalculateProximityForAllOnLikes;
-            _likeService.OnDislikesChanged += CalculateProximityForAllOnLikes;
         }
 
         [Button]
-        public void CalculateProximityForAllOnLikes()
+        public Dictionary<Item, float> CalculateProximityForAllOnLikes()
         {
+            Dictionary<Item, float> proximityOnLikes = new Dictionary<Item, float>();
+            
+            var likes = _likeService.Likes;
+            var dislikes = _likeService.Dislikes;
             List<Item> allItems = _itemsConfig.GetAllItems().ToList();
-            HashSet<Item> likes = _likeService.Likes;
-            HashSet<Item> dislikes = _likeService.Dislikes;
+            
             foreach (var like in _likeService.Likes)
             {
                 allItems.Remove(like);
@@ -62,25 +55,12 @@ namespace Math
                 dislikesProximity.Add(_baseCalculator.CompletedProximityForOne(item, dislikes.ToArray()));
             }
             
-            ProximityOnLikes?.Clear();
-            ProximityOnLikes = new Dictionary<Item, float>();
-            
             for (int i = 0; i < allItems.Count; i++)
             {
-                ProximityOnLikes.Add(allItems[i], TotalProximityForLikes(likesProximity[i], dislikesProximity[i]));
+                proximityOnLikes.Add(allItems[i], TotalProximityForLikes(likesProximity[i], dislikesProximity[i]));
             }
-        }
-
-        [Button]
-        public float CalculateProximityForOneOnAllLikes(Item item)
-        {
-            if (ProximityOnLikes == null)
-                CalculateProximityForAllOnLikes();
-
-            if (!ProximityOnLikes.TryGetValue(item, out var proximity))
-                throw new Exception("Item not found in last all proximity");
-
-            return proximity;
+            
+            return proximityOnLikes;
         }
 
         private float TotalProximityForLikes(float[] likeProximity, float[] dislikeProximity)

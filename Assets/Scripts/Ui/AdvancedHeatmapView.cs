@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Ui
 {
-    public class AdvancedHeatmap : MonoBehaviour
+    public class AdvancedHeatmapView : MonoBehaviour
     {
         [Header("Settings")]
         public int cellSize = 60;

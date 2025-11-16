@@ -9,28 +9,24 @@ using MyNamespace;
 using TriInspector;
 using Ui;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VContainer;
 
 namespace Math
 {
     public class ItemDistance : MonoBehaviour
     {
-        private DebugConsoleView _console;
         private ItemsConfig _itemsConfig;
-        private AdvancedHeatmap _heatmap;
+        private AdvancedHeatmapView _heatmapView;
         public MatrixTree MatrixTree { get; set; }
 
         [Inject]
         public void Construct(
             ItemsConfig itemsConfig,
-            DebugConsoleView console,
-            AdvancedHeatmap heatmap,
+            AdvancedHeatmapView heatmapView,
             MatrixTreeConfig matrixTreeConfig)
         {
-            _console = console;
             _itemsConfig = itemsConfig;
-            _heatmap = heatmap;
+            _heatmapView = heatmapView;
             MatrixTree = new MatrixTree(matrixTreeConfig.RootTag);
             MatrixTree.InitializeFromConfig(matrixTreeConfig);
         }
@@ -60,8 +56,8 @@ namespace Math
                 sb.AppendLine();
             }
             
-            _console.LogMessage(sb.ToString());
-            _heatmap.GenerateHeatmap(matrix);
+            Debug.Log(sb.ToString());
+            _heatmapView.GenerateHeatmap(matrix);
         }
         
         private void PrintArray(float[] array, string title = "Array")
@@ -74,7 +70,7 @@ namespace Math
                 sb.AppendLine($"[{i:D2}] {array[i]:F2}");
             }
             
-            _console.LogMessage(sb.ToString());
+            Debug.Log(sb.ToString());
         }
         
         private float[][] InitializeMatrix(int length)
@@ -87,7 +83,7 @@ namespace Math
 
         private float[][] CalculateDistanceMatrix(Func<Item, Item, float> distanceCalculator, string methodName)
         {
-            _console.LogMessage($"\n=== Calculating {methodName} ===");
+            Debug.Log($"\n=== Calculating {methodName} ===");
             var items = _itemsConfig.GetAllItems();
             var length = items.Length;
 
@@ -208,7 +204,7 @@ namespace Math
         [Button]
         public void CompletedProximity(ProximityTypesForNumeric numericType, ProximityTypesForTypes typesType)
         {
-            _console.LogMessage("\n=== Calculating Combined Proximity ===");
+            Debug.Log("\n=== Calculating Combined Proximity ===");
             var items = _itemsConfig.GetAllItems();
             var length = items.Length;
 
@@ -294,7 +290,7 @@ namespace Math
 
         public float[] CalculateEuclidDistancesForOne(Item first, Item[] others)
         {
-            _console.LogMessage($"\n=== Calculating Euclidean Distances for {first.Name} ===");
+            Debug.Log($"\n=== Calculating Euclidean Distances for {first.Name} ===");
             var length = others.Length;
             Item maxProximityItem = new();
             float maxProximity = 0f;
@@ -330,14 +326,14 @@ namespace Math
             }
             
             PrintArray(array, $"Distances from {first.Name}");
-            _console.LogMessage($"\nMost similar item to {first.Name}: {maxProximityItem.Name} (Distance: {maxProximity:F2})");
+            Debug.Log($"\nMost similar item to {first.Name}: {maxProximityItem.Name} (Distance: {maxProximity:F2})");
             
             return array;
         }
         
         public float[] CalculateJacquardDistancesForOne(Item first)
         {
-            _console.LogMessage($"\n=== Calculating Jaccard Distances for {first.Name} ===");
+            Debug.Log($"\n=== Calculating Jaccard Distances for {first.Name} ===");
             var items = _itemsConfig.GetAllItems();
             var length = items.Length;
             Item maxProximityItem = new();
@@ -364,14 +360,14 @@ namespace Math
             }
 
             PrintArray(array, $"Jacqard Distances for {first.Name}");
-            _console.LogMessage($"Max proximity item for {first.Name}: {maxProximityItem.Name} with proximity {maxProximity:F2}");
+            Debug.Log($"Max proximity item for {first.Name}: {maxProximityItem.Name} with proximity {maxProximity:F2}");
 
             return array;
         }
 
         public float[] CalculateTreeDistancesForOne(Item first, Item[] others)
         {
-            _console.LogMessage($"\n=== Calculating Tree Distances for {first.Name} ===");
+            Debug.Log($"\n=== Calculating Tree Distances for {first.Name} ===");
             var length = others.Length;
             Item maxProximityItem = new();
             float maxProximity = 0f;
@@ -397,7 +393,7 @@ namespace Math
             }
 
             PrintArray(array, $"Jacqard Distances for {first.Name}");
-            _console.LogMessage($"Max proximity item for {first.Name}: {maxProximityItem.Name} with proximity {maxProximity:F2}");
+            Debug.Log($"Max proximity item for {first.Name}: {maxProximityItem.Name} with proximity {maxProximity:F2}");
 
             return array;
         }
@@ -431,7 +427,7 @@ namespace Math
         
         public float[] CompletedProximityForOne(Item one, Item[] others)
         {
-            _console.LogMessage("\n=== Calculating Combined Proximity ===");
+            Debug.Log("\n=== Calculating Combined Proximity ===");
 
             if (others == null || others.Length == 0)
                 return Array.Empty<float>();
@@ -455,7 +451,7 @@ namespace Math
             }
             
             PrintArray(total, $"Combined Proximity Array for {one.Name} on specific items");
-            _console.LogMessage($"\nMost similar item to {one.Name}: {others[maxValueIndex].Name} (Distance: {maxValue:F2})");
+            Debug.Log($"\nMost similar item to {one.Name}: {others[maxValueIndex].Name} (Distance: {maxValue:F2})");
 
             return total;
         }

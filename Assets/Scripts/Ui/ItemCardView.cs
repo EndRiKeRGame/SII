@@ -63,4 +63,10 @@ public class ItemCardView : MonoBehaviour
         _likeBtn.onClick.AddListener(_onLike);
         _dislikeBtn.onClick.AddListener(_onDislike);
     }
+    
+    public void ClearButtons()
+    {
+        _likeBtn.onClick.RemoveListener(_onLike);
+        _dislikeBtn.onClick.RemoveListener(_onDislike);
+    }
 }

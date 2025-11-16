@@ -19,4 +19,4 @@ namespace Common
         
         public Sprite Sprite;
     }
-}
+} 

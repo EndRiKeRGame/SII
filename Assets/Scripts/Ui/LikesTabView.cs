@@ -4,7 +4,6 @@ using PrimeTween;
 using System.Collections.Generic;
 using Common;
 using TMPro;
-using UnityEngine.Serialization;
 
 public class LikesTabView : MonoBehaviour
 {

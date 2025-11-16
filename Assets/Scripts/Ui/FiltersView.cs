@@ -50,8 +50,6 @@ public class FiltersView : MonoBehaviour
     [SerializeField]
     public Button ClearButton;
 
-    public FilterItem FilterItem { get; private set; }
-
     [Inject]
     public void Construct()
     {
@@ -60,31 +58,26 @@ public class FiltersView : MonoBehaviour
         foreach (var one in all)
             _tagsDropdown.options.Add(new TMP_Dropdown.OptionData(one.ToString()));
         
-        FilterItem = new FilterItem();
-        FilterButton.onClick.AddListener(ApplyFilters);
         ClearButton.onClick.AddListener(ClearFilters);
     }
     
     public void OnDestroy()
     {
-        FilterButton.onClick.RemoveListener(ApplyFilters);
         ClearButton.onClick.RemoveListener(ClearFilters);
     }
 
-    public void ApplyFilters()
+    public void ApplyFilters(ref FilterItem filter)
     {
-        ApplyPriceFilter();
-        ApplyNameFilter();
-        ApplyNumOfPlayerFilter();
-        ApplyMinAgeFilter();
-        ApplyTagsFilter();
-        ApplyAvgPlayTimeFilter();
+        ApplyPriceFilter(ref filter);
+        ApplyNameFilter(ref filter);
+        ApplyNumOfPlayerFilter(ref filter);
+        ApplyMinAgeFilter(ref filter);
+        ApplyTagsFilter(ref filter);
+        ApplyAvgPlayTimeFilter(ref filter);
     }
-    
-    public void ClearFilters()
+
+    private void ClearFilters()
     {
-        FilterItem = new FilterItem();
-        
         _priceFromInput.text = "";
         _priceToInput.text = "";
         _nameInput.text = "";
@@ -96,7 +89,7 @@ public class FiltersView : MonoBehaviour
         _tagsDropdown.value = 0;
     }
 
-    private void ApplyPriceFilter()
+    private void ApplyPriceFilter(ref FilterItem filter)
     {
         string priceFromInput = _priceFromInput.text;
         string priceToInput = _priceToInput.text;
@@ -111,16 +104,16 @@ public class FiltersView : MonoBehaviour
             !int.TryParse(priceToInput, out var to))
             return;
         
-        FilterItem.PriceFrom = from;
-        FilterItem.PriceTo = to;
+        filter.PriceFrom = from;
+        filter.PriceTo = to;
     }
     
-    private void ApplyNameFilter()
+    private void ApplyNameFilter(ref FilterItem filter)
     {
-        FilterItem.Name = _nameInput.text;
+        filter.Name = _nameInput.text;
     }
     
-    private void ApplyNumOfPlayerFilter()
+    private void ApplyNumOfPlayerFilter(ref FilterItem filter)
     {
         string numOfPlayersFromInput = _numOfPlayersFromInput.text;
         string numOfPlayersToInput = _numOfPlayersToInput.text;
@@ -135,11 +128,11 @@ public class FiltersView : MonoBehaviour
             !int.TryParse(numOfPlayersToInput, out var to))
             return;
         
-        FilterItem.NumOfPlayersFrom = from;
-        FilterItem.NumOfPlayersTo = to;
+        filter.NumOfPlayersFrom = from;
+        filter.NumOfPlayersTo = to;
     }
     
-    private void ApplyMinAgeFilter()
+    private void ApplyMinAgeFilter(ref FilterItem filter)
     {
         string minAgeFromInput = _minAgeFromInput.text;
         
@@ -149,10 +142,10 @@ public class FiltersView : MonoBehaviour
         if (!int.TryParse(minAgeFromInput, out var from))
             return;
         
-        FilterItem.MinAge = from;
+        filter.MinAge = from;
     }
     
-    private void ApplyAvgPlayTimeFilter()
+    private void ApplyAvgPlayTimeFilter(ref FilterItem filter)
     {
         string avgAgePlayFromInput = _avgPlayTimeFromInput.text;
         string avgAgePlayToInput = _avgPlayTimeToInput.text;
@@ -167,13 +160,13 @@ public class FiltersView : MonoBehaviour
             !int.TryParse(avgAgePlayToInput, out var to))
             return;
         
-        FilterItem.AvgPlayTimeFrom = from;
-        FilterItem.AvgPlayTimeTo = to;
+        filter.AvgPlayTimeFrom = from;
+        filter.AvgPlayTimeTo = to;
     }
     
-    private void ApplyTagsFilter()
+    private void ApplyTagsFilter(ref FilterItem filter)
     {
-        FilterItem.Tags = GetSelectedTexts(_tagsDropdown, _tagsDropdown.value);
+        filter.Tags = GetSelectedTexts(_tagsDropdown, _tagsDropdown.value);
     }
     
     private List<ItemTag> GetSelectedTexts(TMP_Dropdown dropdown, int maskValue)
