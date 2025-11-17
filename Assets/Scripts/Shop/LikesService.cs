@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Common;
-using History;
 using Shop.Configs;
 using UnityEngine;
 using VContainer;
@@ -22,6 +21,18 @@ namespace Shop
         public LikesService(LikesStorage likesStorage)
         {
             _likesStorage = likesStorage;
+        }
+
+        public void UpdateAllData(List<Item> likes, List<Item> dislikes)
+        {
+            _likesStorage.Likes.Clear();
+            _likesStorage.Dislikes.Clear();
+
+            foreach (var like in likes)
+                _likesStorage.Likes.Add(like);
+            
+            foreach (var dislike in dislikes)
+                _likesStorage.Dislikes.Add(dislike);
         }
 
         public bool TryAddLike(Item item)

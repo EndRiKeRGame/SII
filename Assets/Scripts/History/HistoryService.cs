@@ -35,7 +35,10 @@ namespace History
         public HistoryStep UndoMove()
         {
             if (_history.Count <= 1)
+            {
+                _history.Clear();
                 return CreateEmptyHistoryStep();
+            }
 
             _history.Pop();
             return _history.Peek();

@@ -32,19 +32,20 @@ namespace Boot
             builder.RegisterInstance(_tagsTree);
             builder.RegisterInstance(_likesStorage);
             
-            builder.RegisterComponentInHierarchy<FiltersView>();
-            
-            builder.Register<HistoryService>(Lifetime.Singleton);
-            builder.Register<LikesService>(Lifetime.Singleton);
-            builder.Register<FiltersService>(Lifetime.Singleton);
-            
             builder.RegisterComponentInHierarchy<LikesTabService>();
             builder.RegisterComponentInHierarchy<AdvancedHeatmapView>();
-            builder.RegisterComponentInHierarchy<ShopInitializer>();
+            builder.RegisterComponentInHierarchy<FiltersView>();
+            builder.RegisterComponentInHierarchy<ItemCardGridView>();
             builder.RegisterComponentInHierarchy<ItemDistance>();
             builder.RegisterComponentInHierarchy<ItemDistanceWithLikes>();
-            builder.RegisterComponentInHierarchy<ItemCardGridView>();
             
+            builder.Register<LikesService>(Lifetime.Singleton);
+            builder.Register<FiltersService>(Lifetime.Singleton);
+            builder.Register<HistoryService>(Lifetime.Singleton);
+            
+            builder.Register<Facade>(Lifetime.Singleton);
+            
+            builder.RegisterComponentInHierarchy<ShopInitializer>();
             builder.RegisterComponentInHierarchy<InputHandler>();
         }
     }

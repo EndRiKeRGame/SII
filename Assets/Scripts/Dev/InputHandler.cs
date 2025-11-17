@@ -1,33 +1,28 @@
-﻿using Shop;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using VContainer;
 
 namespace Dev
 {
     public class InputHandler : MonoBehaviour
     {
-        [SerializeField]
-        private Button _filterEnterButton;
-
-        private ShopInitializer _shopService;
+        private Facade _facade;
 
         [Inject]
-        private void Constructor(ShopInitializer shopService)
+        private void Constructor(Facade facade)
         {
-            _shopService = shopService;
+            _facade = facade;
         }
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
             {
-                _filterEnterButton.onClick.Invoke();
+                _facade.ApplyParamsFilter();
             }
             
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                _shopService.UndoMove();
+                _facade.UndoShopState();
             }
         }
     }

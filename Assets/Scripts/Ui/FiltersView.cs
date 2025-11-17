@@ -4,6 +4,8 @@ using Common;
 using Common.Enums;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using VContainer;
 
@@ -45,10 +47,10 @@ public class FiltersView : MonoBehaviour
     [Space(5)]
     [Header("Кнопки")]
     [SerializeField]
-    public Button FilterButton;
+    private Button _filterButton;
     
     [SerializeField]
-    public Button ClearButton;
+    private Button _clearButton;
 
     [Inject]
     public void Construct()
@@ -58,12 +60,19 @@ public class FiltersView : MonoBehaviour
         foreach (var one in all)
             _tagsDropdown.options.Add(new TMP_Dropdown.OptionData(one.ToString()));
         
-        ClearButton.onClick.AddListener(ClearFilters);
+        _clearButton.onClick.AddListener(ClearFilters);
+    }
+
+    public void AddButtons(Action onSubmit, Action onClear)
+    {
+        _filterButton.onClick.AddListener(new UnityAction(onSubmit));
+        _clearButton.onClick.AddListener(new UnityAction(onClear));
     }
     
     public void OnDestroy()
     {
-        ClearButton.onClick.RemoveListener(ClearFilters);
+        _filterButton.onClick.RemoveAllListeners();
+        _clearButton.onClick.RemoveAllListeners();
     }
 
     public void ApplyFilters(ref FilterItem filter)
@@ -76,7 +85,7 @@ public class FiltersView : MonoBehaviour
         ApplyAvgPlayTimeFilter(ref filter);
     }
 
-    private void ClearFilters()
+    public void ClearFilters()
     {
         _priceFromInput.text = "";
         _priceToInput.text = "";

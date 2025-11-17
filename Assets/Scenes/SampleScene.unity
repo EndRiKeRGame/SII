@@ -5646,6 +5646,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemCardGridView: {fileID: 1004133149}
+  _filtersView: {fileID: 1602394258}
 --- !u!1 &1074987580
 GameObject:
   m_ObjectHideFlags: 0
@@ -8325,8 +8326,8 @@ MonoBehaviour:
   _avgPlayTimeFromInput: {fileID: 1230600676}
   _avgPlayTimeToInput: {fileID: 535794293}
   _tagsDropdown: {fileID: 2024493646}
-  FilterButton: {fileID: 225193416}
-  ClearButton: {fileID: 1936008031}
+  _filterButton: {fileID: 225193416}
+  _clearButton: {fileID: 1936008031}
 --- !u!1 &1617981718
 GameObject:
   m_ObjectHideFlags: 0
@@ -9435,7 +9436,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7691a2d3fff74f9db8134e4121107afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _filterEnterButton: {fileID: 225193416}
 --- !u!4 &1967622735
 Transform:
   m_ObjectHideFlags: 0

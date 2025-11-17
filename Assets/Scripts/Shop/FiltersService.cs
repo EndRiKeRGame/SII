@@ -1,39 +1,23 @@
-﻿using System;
-using Common;
-using UnityEngine;
-using UnityEngine.Events;
+﻿using Common;
 using VContainer;
 
 namespace Shop
 {
     public class FiltersService
     {
-        public event Action OnFilterChanged;
-        
         private readonly FiltersView _filtersView;
         
         [Inject]
-        public FiltersService(FiltersView view)
+        public FiltersService(FiltersView filtersView)
         {
-            _filtersView = view;
-            Debug.Log("Filters service ready");
-            
-            _filtersView.FilterButton.onClick.AddListener(InvokeFilterChanged);
-            _filtersView.ClearButton.onClick.AddListener(InvokeFilterChanged);
+            _filtersView = filtersView;
         }
 
-        public void AdditionalInit(Action onFilterChanged)
+        public void ClearFiltersView()
         {
-            _filtersView.FilterButton.onClick.AddListener(new UnityAction(onFilterChanged));
-            _filtersView.ClearButton.onClick.AddListener(new UnityAction(onFilterChanged));
+            _filtersView.ClearFilters();
         }
         
-        public void OnDestroy()
-        {
-            _filtersView.FilterButton.onClick.RemoveListener(InvokeFilterChanged);
-            _filtersView.ClearButton.onClick.RemoveListener(InvokeFilterChanged);
-        }
-
         public FilterItem CreateEmptyFilterItem()
         {
             return new FilterItem
@@ -56,11 +40,6 @@ namespace Shop
             _filtersView.ApplyFilters(ref filter);
             
             return filter;
-        }
-        
-        private void InvokeFilterChanged()
-        {
-            OnFilterChanged?.Invoke();
         }
     }
 }
