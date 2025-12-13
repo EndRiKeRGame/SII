@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Common.Enums;
 using TriInspector;
@@ -81,7 +82,7 @@ namespace Common.Configs
         {
             foreach (var item in _items)
             {
-                if (item.Name != name)
+                if (!string.Equals(item.Name, name, StringComparison.CurrentCultureIgnoreCase))
                     continue;
                 
                 neededItem = item;

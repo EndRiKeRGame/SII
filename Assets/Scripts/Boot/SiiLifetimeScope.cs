@@ -1,4 +1,6 @@
-﻿using Common.Configs;
+﻿using ChatBot;
+using ChatBot.Configs;
+using Common.Configs;
 using Dev;
 using History;
 using Math;
@@ -22,6 +24,9 @@ namespace Boot
         [SerializeField]
         private LikesStorage _likesStorage;
         
+        [SerializeField]
+        private RegularExpressionsConfig _regularExpressionsConfig;
+        
         private LikesService _likesService;
         private ItemDistanceWithLikes _itemDistanceWithLikes;
         private FiltersService _filtersService;
@@ -31,6 +36,7 @@ namespace Boot
             builder.RegisterInstance(_itemsConfig);
             builder.RegisterInstance(_tagsTree);
             builder.RegisterInstance(_likesStorage);
+            builder.RegisterInstance(_regularExpressionsConfig);
             
             builder.RegisterComponentInHierarchy<LikesTabService>();
             builder.RegisterComponentInHierarchy<AdvancedHeatmapView>();
@@ -47,6 +53,8 @@ namespace Boot
             
             builder.RegisterComponentInHierarchy<ShopInitializer>();
             builder.RegisterComponentInHierarchy<InputHandler>();
+            builder.RegisterComponentInHierarchy<ChatBotView>();
+            builder.RegisterComponentInHierarchy<ChatSystem>();
         }
     }
 }

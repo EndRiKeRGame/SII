@@ -1,3 +1,5 @@
+using Common;
+using Dev;
 using PrimeTween;
 using UnityEngine;
 using Shop;
@@ -14,12 +16,22 @@ public class LikesTabService : MonoBehaviour
     [SerializeField]
     private LikesTabView _dislikesTabView;
     
+    [SerializeField]
+    private BaseTabView _filterTabView;
+    
+    [SerializeField]
+    private BaseTabView _chatTabView;
+    
     private LikesService _likesService;
+    private Facade _facade;
     
     [Inject]
-    public void Constructor(LikesService likesService)
+    public void Constructor(
+        LikesService likesService,
+        Facade facade)
     {
         _likesService = likesService;
+        _facade = facade;
     }
 
     public void Awake()
@@ -27,8 +39,10 @@ public class LikesTabService : MonoBehaviour
         _likesService.OnLikesChanged += OnLikesChanged;
         _likesService.OnDislikesChanged += OnDislikesChanged;
         
-        _likesTabView.ToggleButton.onClick.AddListener(OnLikeTab);
-        _dislikesTabView.ToggleButton.onClick.AddListener(OnDislikeTab);
+        _likesTabView.Init(OnLikeTab);
+        _dislikesTabView.Init(OnDislikeTab);
+        _filterTabView.Init(OnFilterTab);
+        _chatTabView.Init(OnChatTab);
         
         _dislikesTabView.ClearItems();
         _likesTabView.ClearItems();
@@ -38,9 +52,6 @@ public class LikesTabService : MonoBehaviour
     {
         _likesService.OnLikesChanged -= OnLikesChanged;
         _likesService.OnDislikesChanged -= OnDislikesChanged;
-        
-        _likesTabView.ToggleButton.onClick.RemoveListener(OnLikeTab);
-        _dislikesTabView.ToggleButton.onClick.RemoveListener(OnDislikeTab);
     }
     
     private void OnLikesChanged()
@@ -49,9 +60,12 @@ public class LikesTabService : MonoBehaviour
         
         var likes = _likesService.Likes;
         foreach (var like in likes)
-        {
-            _likesTabView.AddItem(like);
-        }
+            _likesTabView.AddItem(like, () =>
+            {
+                _likesService.TryRemoveLike(like);
+                _facade.ApplyLikesFilter();
+                _facade.SaveShopState();
+            });
     }
     
     private void OnDislikesChanged()
@@ -60,9 +74,12 @@ public class LikesTabService : MonoBehaviour
         
         var dislikes = _likesService.Dislikes;
         foreach (var dislike in dislikes)
-        {
-            _dislikesTabView.AddItem(dislike);
-        }
+            _dislikesTabView.AddItem(dislike, () =>
+            {
+                _likesService.TryRemoveDislike(dislike);
+                _facade.ApplyLikesFilter();
+                _facade.SaveShopState();
+            });
     }
 
     private void OnLikeTab()
@@ -70,12 +87,16 @@ public class LikesTabService : MonoBehaviour
         if (_dislikesTabView.IsVisible())
             _dislikesTabView.Hide();
         
+        if (_filterTabView.IsVisible())
+            _filterTabView.Hide();
+        
+        if (_chatTabView.IsVisible())
+            _chatTabView.Hide();
+        
         if (!_likesTabView.IsVisible())
             _likesTabView.Show();
         else
             _likesTabView.Hide();
-
-        MoveButtons();
     }
     
     private void OnDislikeTab()
@@ -83,19 +104,49 @@ public class LikesTabService : MonoBehaviour
         if (_likesTabView.IsVisible())
             _likesTabView.Hide();
         
+        if (_filterTabView.IsVisible())
+            _filterTabView.Hide();
+        
+        if (_chatTabView.IsVisible())
+            _chatTabView.Hide();
+        
         if (!_dislikesTabView.IsVisible())
             _dislikesTabView.Show();
         else
             _dislikesTabView.Hide();
-
-        MoveButtons();
     }
-
-    private void MoveButtons()
+    
+    private void OnFilterTab()
     {
-        if (!_likesTabView.IsVisible() && !_dislikesTabView.IsVisible() && !Mathf.Approximately(_buttonsLayout.anchoredPosition.x, -295))
-            Tween.UIAnchoredPositionX(_buttonsLayout, -295, 0.5f);
+        if (_likesTabView.IsVisible())
+            _likesTabView.Hide();
+        
+        if (_dislikesTabView.IsVisible())
+            _dislikesTabView.Hide();
+        
+        if (_chatTabView.IsVisible())
+            _chatTabView.Hide();
+        
+        if (!_filterTabView.IsVisible())
+            _filterTabView.Show();
         else
-            Tween.UIAnchoredPositionX(_buttonsLayout, 307, 0.5f);
+            _filterTabView.Hide();
+    }
+    
+    private void OnChatTab()
+    {
+        if (_likesTabView.IsVisible())
+            _likesTabView.Hide();
+        
+        if (_dislikesTabView.IsVisible())
+            _dislikesTabView.Hide();
+        
+        if (_filterTabView.IsVisible())
+            _filterTabView.Hide();
+        
+        if (!_chatTabView.IsVisible())
+            _chatTabView.Show();
+        else
+            _chatTabView.Hide();
     }
 }
