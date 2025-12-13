@@ -45,6 +45,14 @@ public class ItemCardGridView : MonoBehaviour
         }
     }
     
+    public void ApplyLikes(List<Item> likes, List<Item> dislikes)
+    {
+        foreach (var (item, view) in _cardViews)
+        {
+            view.gameObject.SetActive(!likes.Contains(item) && !dislikes.Contains(item));
+        }
+    }
+    
     public void UpdateItemsPositions(List<Item> likes, List<Item> dislikes, Dictionary<Item, float> proximity)
     {
         int currentPos = 0;

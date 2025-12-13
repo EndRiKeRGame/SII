@@ -33,6 +33,9 @@ namespace Shop
             
             foreach (var dislike in dislikes)
                 _likesStorage.Dislikes.Add(dislike);
+            
+            OnLikesChanged?.Invoke();
+            OnDislikesChanged?.Invoke();
         }
 
         public bool TryAddLike(Item item)

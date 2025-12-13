@@ -5,7 +5,6 @@ using Common.Enums;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using VContainer;
 

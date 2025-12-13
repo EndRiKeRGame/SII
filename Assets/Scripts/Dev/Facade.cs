@@ -87,6 +87,7 @@ namespace Dev
             _likeService.UpdateAllData(likes, dislikes);
             
             _itemCardGridView.UpdateItemsPositions(likes, dislikes, _itemDistanceWithLikes.CalculateProximityForAllOnLikes());
+            _itemCardGridView.ApplyLikes(likes, dislikes);
         }
         
         public void SaveShopState()
