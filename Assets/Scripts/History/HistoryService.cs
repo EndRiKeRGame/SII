@@ -44,6 +44,11 @@ namespace History
             return _history.Peek();
         }
         
+        public void ClearHistory()
+        {
+            _history.Clear();
+        }
+        
         private HistoryStep CreateEmptyHistoryStep()
         {
             return new HistoryStep

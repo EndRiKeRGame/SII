@@ -15,10 +15,11 @@ namespace ChatBot.Configs
         public bool GetValue(string timeName, out int timeValue)
         {
             timeValue = -1;
+            timeName = timeName.Trim();
             
             foreach (var time in _timeVarDictionary)
             {
-                if (time.Name != timeName)
+                if (!timeName.Contains(time.Name))
                     continue;
 
                 timeValue = time.Value;

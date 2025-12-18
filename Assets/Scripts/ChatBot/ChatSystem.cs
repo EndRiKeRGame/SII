@@ -126,7 +126,7 @@ namespace ChatBot
                                 _facade.RemoveLikeDislike(buy);
                                 _facade.ApplyLikesFilter();
                                 
-                                response = $"Вот 3 настолки, которые должны тебе понравится!";;
+                                response = $"Круто! Убрал из лайков и дизлайков";
                                 return true;
                         }
                     }
@@ -162,33 +162,68 @@ namespace ChatBot
                                 
                                 response = $"Применил фильтр по цене: все игры дешевле {price}!";
                                 return true;
-                            case "num_of_players_filter_max":
-                                var numOfPlayersString = match.Groups[1].Value;
-                                int players = Convert.ToInt32(numOfPlayersString);
-                                filter.NumOfPlayersTo = players;
-                                _facade.ApplyParamsFilterWithParams(filter);
+                            
+                            case "num_of_players_filter":
+                                int playersNum = -1;
+
+                                try
+                                {
+                                    if (!string.IsNullOrEmpty(match.Groups[1].Value))
+                                    {
+                                        playersNum = Convert.ToInt32(match.Groups[1].Value.Trim('?'));
+                                    }
+                                }
+                                catch (Exception e) { }
                                 
-                                response = $"Применил фильтр по количеству игроков: все игры до {players} человек!";
+                                try
+                                {
+                                    if (!string.IsNullOrEmpty(match.Groups[1].Value))
+                                    {
+                                        string word = match.Groups[1].Value.ToLower().Trim('?');
+                                        playersNum = word switch
+                                        {
+                                            "двоих" or "двух" or "два" => 2,
+                                            "троих" or "трех" or "три" => 3,
+                                            "четверых" or "четырех" or "четыре" => 4,
+                                            "пятерых" or "пяти" or "пять" => 5,
+                                            _ => throw new ArgumentException($"Неизвестное количество игроков: {word}")
+                                        };
+                                    }
+                                }
+                                catch (Exception e) { }
+                                
+                                if (playersNum == -1)
+                                    return false;
+    
+                                filter.NumOfPlayersFrom = playersNum;
+                                _facade.ApplyParamsFilterWithParams(filter);
+                                response = $"Применил фильтр по количеству игроков: все игры от {playersNum} человек!";
                                 return true;
+                            
                             case "name_filter":
                                 gameName = match.Groups[1].Value;
-                                filter.Name = gameName;
+                                
+                                if (!_items.TryGetItemByNameFuzzy($"{gameName}", out var item, maxDistance: 5))
+                                    throw new Exception($"Не нашел игры с названием {gameName} =(");
+                                
+                                filter.Name = item.Name;
                                 _facade.ApplyParamsFilterWithParams(filter);
                                 
-                                response = $"Применил фильтр по названию: все игры с названием {gameName}!";
+                                response = $"Применил фильтр по названию: все игры с названием {item.Name}!";
                                 return true;
+                            
                             case "tags_filter":
                                 var tagString = match.Groups[1].Value;
-                                var itemTag = StringToTag.Convert(tagString);
-                                filter.Tags.Add(itemTag);
+                                var itemTag = StringToTag.FindClosestEnum(tagString);
+                                filter.Tags.Add(itemTag.Value);
                                 _facade.ApplyParamsFilterWithParams(filter);
                                 
-                                response = $"Применил фильтр по тегам: все игры с названием {gameName}!";
+                                response = $"Применил фильтр по тегам: все игры с тегом {itemTag.Value}!";
                                 return true;
                             
                             case "time_filter":
                                 var timeString = match.Groups[1].Value;
-                                if (_timeVarConfig.GetValue(timeString, out int time))
+                                if (!_timeVarConfig.GetValue(timeString, out int time))
                                     throw new Exception($"Не нашел значения для лингвистической переменной {timeString} =(");
                                 filter.AvgPlayTimeTo = time;
                                 _facade.ApplyParamsFilterWithParams(filter);
@@ -231,30 +266,54 @@ namespace ChatBot
                                 return true;
                             
                             case "like_num_of_players":
+                                int playersNum = -1;
+
+                                try
+                                {
+                                    if (!string.IsNullOrEmpty(match.Groups[2].Value))
+                                    {
+                                        playersNum = Convert.ToInt32(match.Groups[2].Value.Trim('?'));
+                                    }
+                                }
+                                catch (Exception e) { }
+                                
+                                try
+                                {
+                                    if (!string.IsNullOrEmpty(match.Groups[2].Value))
+                                    {
+                                        string word = match.Groups[2].Value.ToLower().Trim('?');
+                                        playersNum = word switch
+                                        {
+                                            "двоих" or "двух" or "два" => 2,
+                                            "троих" or "трех" or "три" => 3,
+                                            "четверых" or "четырех" or "четыре" => 4,
+                                            "пятерых" or "пяти" or "пять" => 5,
+                                            _ => throw new ArgumentException($"Неизвестное количество игроков: {word}")
+                                        };
+                                    }
+                                }
+                                catch (Exception e) { }
+                                
+                                if (playersNum == -1)
+                                    return false;
+    
+                                filter.NumOfPlayersFrom = playersNum;
+                                
                                 gameName = match.Groups[1].Value;
-                                var playersString = match.Groups[2].Value;
-                                int players = int.Parse(playersString);
-                                filter.NumOfPlayersFrom = players;
+                                filter.NumOfPlayersFrom = playersNum;
                                 _facade.ApplyParamsFilterWithParams(filter);
                                 
                                 AddToLike(gameName);
                                 response = $"Я тебя услышал: поставил лайк {gameName} и добавил фильтр на количество игроков!";
                                 return true;
                             
-                            case "time_top3":
-                                var timeString = match.Groups[1].Value;
-                                int time = int.Parse(timeString);
-                                filter.AvgPlayTimeTo = time;
-                                _facade.ApplyParamsFilterWithParams(filter);
-                                
-                                _facade.ShowFirstX();
-                                response = $"Понял! Держи топ-3 игр, которые длятся не дольше {time} минут.";
-                                return true;
-                            
                             case "name_tag":
                                 gameName = match.Groups[1].Value;
-                                var tagString = match.Groups[2].Value;
-                                filter.Tags.Add(StringToTag.Convert(tagString));
+                                var tagString = match.Groups[2].Value.ToLower().Replace(" ", "_");
+                                if (!StringToTag.FindClosestEnum(tagString).HasValue)
+                                    throw new Exception($"Не нашел тег {tagString}");
+                                    
+                                filter.Tags.Add(StringToTag.FindClosestEnum(tagString).Value);
                                 _facade.ApplyParamsFilterWithParams(filter);
                                 
                                 AddToDislike(gameName);
@@ -262,8 +321,8 @@ namespace ChatBot
                                 return true;
                             
                             case "likeTag":
-                                var likeTagString = match.Groups[1].Value;
-                                ItemTag likeTag = StringToTag.Convert(likeTagString);
+                                var likeTagString = match.Groups[1].Value.ToLower().Replace(" ", "_");
+                                ItemTag likeTag = StringToTag.FindClosestEnum(likeTagString).Value;
                                 var items = _items.GetItemsByTags(new List<ItemTag> { likeTag });
 
                                 foreach (var item in items)
@@ -275,8 +334,8 @@ namespace ChatBot
                                 return true;
                             
                             case "dislikeTag":
-                                var dislikeTagString = match.Groups[1].Value;
-                                ItemTag dislikeTag = StringToTag.Convert(dislikeTagString);
+                                var dislikeTagString = match.Groups[1].Value.ToLower().Replace(" ", "_");
+                                ItemTag dislikeTag = StringToTag.FindClosestEnum(dislikeTagString).Value;
                                 var disItems = _items.GetItemsByTags(new List<ItemTag> { dislikeTag });
 
                                 foreach (var item in disItems)
@@ -313,6 +372,10 @@ namespace ChatBot
                             _facade.UndoShopState();
                             response = $"Откатил магазин на один шаг назад!";
                             return true;
+                        case "undo_all":
+                            _facade.UndoAllSteps();
+                            response = $"Откатил все твои действия!";
+                            return true;
                     }
                 }
             }
@@ -337,7 +400,7 @@ namespace ChatBot
                         case "tags_ask":
                             response = $"Хороший вопрос! Жанры бывают самые раззнообразные, вот тебе список тех, которые есть сейчас в магазине:\n";
                             for (int i = 0; i <= 26; i++)
-                                response += $"{(ItemTag)i}";
+                                response += $"{(ItemTag)i}\n";
                             return true;
                         
                         case "help":
@@ -369,20 +432,38 @@ namespace ChatBot
 
         private void AddToLike(string gameName)
         {
-            if (!_items.TryGetItemByName($"{gameName}", out var like))
+            if (_items.TryGetItemByName($"{gameName}", out var like))
+            {
+                _facade.AddToLike(like);
+                _facade.ApplyLikesFilter();
+            }
+            else if (_items.TryGetItemByNameFuzzy($"{gameName}", out var like2))
+            {
+                _facade.AddToLike(like2);
+                _facade.ApplyLikesFilter();
+            }
+            else
+            {
                 throw new Exception($"Не нашел игры с названием {gameName} =(");
-                                
-            _facade.AddToLike(like);
-            _facade.ApplyLikesFilter();
+            }
         }
         
         private void AddToDislike(string gameName)
         {
-            if (!_items.TryGetItemByName($"{gameName}", out var like))
+            if (_items.TryGetItemByName($"{gameName}", out var like))
+            {
+                _facade.AddToDislike(like);
+                _facade.ApplyLikesFilter();
+            }
+            else if (_items.TryGetItemByNameFuzzy($"{gameName}", out var like2))
+            {
+                _facade.AddToDislike(like2);
+                _facade.ApplyLikesFilter();
+            }
+            else
+            {
                 throw new Exception($"Не нашел игры с названием {gameName} =(");
-                                
-            _facade.AddToDislike(like);
-            _facade.ApplyLikesFilter();
+            }
         }
     }
 }

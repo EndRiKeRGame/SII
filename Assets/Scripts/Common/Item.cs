@@ -14,7 +14,7 @@ namespace Common
         public ItemTag[] Tags;
         
         public int MinNumOfPlayers = 0;
-        public int MaxNumOfPlayers = Int32.MaxValue;
+        public int MaxNumOfPlayers = 0;
         public int AvgPlayTime = -1;
         public int MinimumAge = -1;
         

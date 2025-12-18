@@ -1,4 +1,8 @@
-﻿namespace Common.Enums
+﻿using System;
+using System.Linq;
+using UnityEngine;
+
+namespace Common.Enums
 {
     public enum ItemTag
     {
@@ -44,6 +48,50 @@
         public static ItemTag Convert(string str)
         {
             return (ItemTag)System.Enum.Parse(typeof(ItemTag), str);
+        }
+        
+        public static ItemTag? FindClosestEnum(string searchString)
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return null;
+            
+            string normalizedSearch = searchString.ToLower().Trim();
+        
+            return Enum.GetValues(typeof(ItemTag))
+                .Cast<ItemTag>()
+                .Select(e => new 
+                { 
+                    Value = e, 
+                    Distance = LevenshteinDistance(normalizedSearch, e.ToString().ToLower())
+                })
+                .OrderBy(x => x.Distance)
+                .FirstOrDefault(x => x.Distance <= 5) // Пороговое значение
+                ?.Value;
+        }
+    
+        private static int LevenshteinDistance(string a, string b)
+        {
+            if (string.IsNullOrEmpty(a)) return b?.Length ?? 0;
+            if (string.IsNullOrEmpty(b)) return a.Length;
+        
+            int[,] matrix = new int[a.Length + 1, b.Length + 1];
+        
+            for (int i = 0; i <= a.Length; i++) matrix[i, 0] = i;
+            for (int j = 0; j <= b.Length; j++) matrix[0, j] = j;
+        
+            for (int i = 1; i <= a.Length; i++)
+            {
+                for (int j = 1; j <= b.Length; j++)
+                {
+                    int cost = (a[i - 1] == b[j - 1]) ? 0 : 1;
+                    matrix[i, j] = Mathf.Min(
+                        Mathf.Min(matrix[i - 1, j] + 1, matrix[i, j - 1] + 1),
+                        matrix[i - 1, j - 1] + cost
+                    );
+                }
+            }
+        
+            return matrix[a.Length, b.Length];
         }
     }
 }

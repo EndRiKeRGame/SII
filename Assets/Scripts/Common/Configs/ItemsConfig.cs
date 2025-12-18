@@ -38,10 +38,13 @@ namespace Common.Configs
                 
                 AvgItem.Price += item.Price;
                 
-                if (item.NumOfPlayers.End.Value > MaxItem.NumOfPlayers.End.Value)
-                    MaxItem.NumOfPlayers = ..item.NumOfPlayers.End.Value;
-                if (item.NumOfPlayers.Start.Value < MinItem.NumOfPlayers.Start.Value || MinItem.NumOfPlayers.Start.Value == 0)
-                    MinItem.NumOfPlayers = item.NumOfPlayers.Start.Value..;
+                if (item.MaxNumOfPlayers > MaxItem.MaxNumOfPlayers || MaxItem.MaxNumOfPlayers == Int32.MaxValue)
+                    MaxItem.MaxNumOfPlayers = item.MaxNumOfPlayers;
+                if (item.MinNumOfPlayers < MinItem.MinNumOfPlayers || MinItem.MinNumOfPlayers == 0)
+                    MinItem.MinNumOfPlayers = item.MinNumOfPlayers;
+                
+                AvgItem.MaxNumOfPlayers += item.MaxNumOfPlayers;
+                AvgItem.MinNumOfPlayers += item.MinNumOfPlayers;
                 
                 if (item.AvgPlayTime > MaxItem.AvgPlayTime)
                     MaxItem.AvgPlayTime = item.AvgPlayTime;
@@ -62,6 +65,8 @@ namespace Common.Configs
             AvgItem.Price /= length;
             AvgItem.AvgPlayTime /= length;
             AvgItem.MinimumAge /= length;
+            AvgItem.MaxNumOfPlayers /= length;
+            AvgItem.MinNumOfPlayers /= length;
         }
 
         public Item[] GetAllItems() => _items;
@@ -89,6 +94,132 @@ namespace Common.Configs
                 return true;
             }
 
+            neededItem = null;
+            return false;
+        }
+        
+        public bool TryGetItemByName(string name, out Item neededItem, int maxDistance = 3)
+        {
+            if (string.IsNullOrWhiteSpace(name) || _items == null || _items.Length == 0)
+            {
+                neededItem = null;
+                return false;
+            }
+
+            string normalizedName = name.Trim().ToLowerInvariant();
+            
+            int bestDistance = int.MaxValue;
+            Item bestItem = null;
+            
+            foreach (var item in _items)
+            {
+                if (string.IsNullOrWhiteSpace(item.Name))
+                    continue;
+                
+                string itemName = item.Name.Trim().ToLowerInvariant();
+                
+                // Если точное совпадение - сразу возвращаем
+                if (string.Equals(itemName, normalizedName, StringComparison.OrdinalIgnoreCase))
+                {
+                    neededItem = item;
+                    return true;
+                }
+                
+                // Вычисляем расстояние Левенштейна
+                int distance = LevenshteinDistance(normalizedName, itemName);
+                
+                // Если нашли лучшее совпадение
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestItem = item;
+                }
+            }
+            
+            // Проверяем, находится ли лучшее совпадение в допустимых пределах
+            if (bestItem != null && bestDistance <= maxDistance)
+            {
+                neededItem = bestItem;
+                return true;
+            }
+            
+            neededItem = null;
+            return false;
+        }
+
+        private static int LevenshteinDistance(string a, string b)
+        {
+            if (string.IsNullOrEmpty(a))
+                return string.IsNullOrEmpty(b) ? 0 : b.Length;
+            if (string.IsNullOrEmpty(b))
+                return a.Length;
+            
+            int[,] matrix = new int[a.Length + 1, b.Length + 1];
+            
+            // Инициализация первой строки и столбца
+            for (int i = 0; i <= a.Length; i++) matrix[i, 0] = i;
+            for (int j = 0; j <= b.Length; j++) matrix[0, j] = j;
+            
+            // Вычисление расстояния
+            for (int i = 1; i <= a.Length; i++)
+            {
+                for (int j = 1; j <= b.Length; j++)
+                {
+                    int cost = (a[i - 1] == b[j - 1]) ? 0 : 1;
+                    matrix[i, j] = Mathf.Min(
+                        Mathf.Min(
+                            matrix[i - 1, j] + 1,      // Удаление
+                            matrix[i, j - 1] + 1       // Вставка
+                        ),
+                        matrix[i - 1, j - 1] + cost    // Замена
+                    );
+                }
+            }
+            
+            return matrix[a.Length, b.Length];
+        }
+
+        // Дополнительный метод с возможностью поиска по части имени
+        public bool TryGetItemByNameFuzzy(string name, out Item neededItem, int maxDistance = 3)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                neededItem = null;
+                return false;
+            }
+            
+            string normalizedName = name.Trim().ToLowerInvariant();
+            
+            // Сначала ищем полное совпадение
+            if (TryGetItemByName(name, out neededItem, maxDistance))
+                return true;
+            
+            // Если не нашли, ищем по части имени (если имя длинное)
+            if (normalizedName.Length >= 3)
+            {
+                var candidates = _items
+                    .Where(item => !string.IsNullOrWhiteSpace(item.Name))
+                    .Select(item => new 
+                    { 
+                        Item = item, 
+                        Name = item.Name.Trim().ToLowerInvariant(),
+                        Distance = LevenshteinDistance(normalizedName, item.Name.Trim().ToLowerInvariant())
+                    })
+                    .Where(x => x.Name.Contains(normalizedName) || normalizedName.Contains(x.Name))
+                    .OrderBy(x => x.Distance)
+                    .ToList();
+                
+                if (candidates.Any())
+                {
+                    var bestCandidate = candidates.First();
+                    if (bestCandidate.Distance <= maxDistance * 2) // Более мягкий порог для частичного совпадения
+                    {
+                        neededItem = bestCandidate.Item;
+                        return true;
+                    }
+                }
+            }
+            
             neededItem = null;
             return false;
         }

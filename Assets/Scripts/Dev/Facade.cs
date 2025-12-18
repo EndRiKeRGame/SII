@@ -125,6 +125,13 @@ namespace Dev
             ApplyLikesFilterWithParams(prevState.Likes, prevState.Dislikes);
         }
         
+        public void UndoAllSteps()
+        {
+            _historyService.ClearHistory();
+            ApplyParamsFilterWithParams(_filtersService.CreateEmptyFilterItem());
+            ApplyLikesFilterWithParams(new List<Item>(), new List<Item>());
+        }
+        
         private bool CheckItemForFilter(Item item, FilterItem filter)
         {
             if (!item.Name.Contains(filter.Name))
@@ -133,8 +140,8 @@ namespace Dev
             if (item.Price < filter.PriceFrom || item.Price > filter.PriceTo)
                 return false;
 
-            if (item.NumOfPlayers.Start.Value < filter.NumOfPlayersFrom ||
-                item.NumOfPlayers.End.Value > filter.NumOfPlayersTo)
+            if (item.MinNumOfPlayers < filter.NumOfPlayersFrom && filter.NumOfPlayersFrom != -1 ||
+                item.MaxNumOfPlayers > filter.NumOfPlayersTo && filter.NumOfPlayersTo != int.MaxValue)
                 return false;
 
             if (item.MinimumAge < filter.MinAge)
