@@ -109,12 +109,12 @@ namespace Shop
             return IsLike(item) || IsDislike(item);
         }
         
-        private bool IsLike(Item item)
+        public bool IsLike(Item item)
         {
             return _likesStorage.Likes.Contains(item);
         }
         
-        private bool IsDislike(Item item)
+        public bool IsDislike(Item item)
         {
             return _likesStorage.Dislikes.Contains(item);
         }

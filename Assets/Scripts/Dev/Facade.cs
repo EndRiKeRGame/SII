@@ -48,10 +48,33 @@ namespace Dev
         {
             _likeService.TryAddDislike(item);
         }
+        
+        public void RemoveLikeDislike(Item item)
+        {
+            if (_likeService.IsLike(item))
+                _likeService.TryRemoveLike(item);
+            else
+                _likeService.TryRemoveDislike(item);
+        }
+
+        public void ShowAll()
+        {
+            _itemCardGridView.ShowAll();
+        }
+        
+        public void ShowFirstX(int x = 3)
+        {
+            _itemCardGridView.ShowFirstX(x);
+        }
 
         public void ClearFilters()
         {
             _filtersService.ClearFiltersView();
+        }
+        
+        public FilterItem GetFilterItem()
+        {
+            return _filtersService.GetFilterItem();
         }
         
         public void ApplyParamsFilter()
@@ -61,7 +84,7 @@ namespace Dev
             ApplyParamsFilterWithParams(filter);
         }
 
-        private void ApplyParamsFilterWithParams(FilterItem filter)
+        public void ApplyParamsFilterWithParams(FilterItem filter)
         {
             var items = _itemsConfig.GetAllItems();
             bool[] mask = new bool[items.Length];

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Security;
 using System.Text.RegularExpressions;
 using ChatBot.Enums;
+using TriInspector;
 using UnityEngine;
 
 namespace ChatBot.Configs
@@ -21,6 +21,9 @@ namespace ChatBot.Configs
         [SerializeField]
         private PatternHolder[] _stringsForGeneral = new PatternHolder[1];
 
+        [SerializeField]
+        private PatternHolder[] _stringsForCombo = new PatternHolder[1];
+
         [HideInInspector]
         [SerializeField]
         private RegexHolder[] _regexForRecommendations;
@@ -32,18 +35,24 @@ namespace ChatBot.Configs
         [HideInInspector]
         [SerializeField]
         private RegexHolder[] _regexForHistory;
-        
+
         [HideInInspector]
         [SerializeField]
         private RegexHolder[] _regexForGeneral;
 
-        private void OnValidate()
+        [HideInInspector]
+        [SerializeField]
+        private RegexHolder[] _regexForCombo;
+
+        [Button]
+        public void Save()
         {
             _regexForRecommendations = CreateRegexs(_stringsForRecommendations);
             _regexForSearch = CreateRegexs(_stringsForSearch);
             _regexForHistory = CreateRegexs(_stringsForHistory);
             _regexForGeneral = CreateRegexs(_stringsForGeneral);
-            
+            _regexForCombo = CreateRegexs(_stringsForCombo);
+
             Debug.Log("Save complete!");
         }
         
@@ -76,6 +85,8 @@ namespace ChatBot.Configs
                     return _regexForHistory;
                 case RequestTypes.General:
                     return _regexForGeneral;
+                case RequestTypes.Combo:
+                    return _regexForCombo;
             }
             
             return null;

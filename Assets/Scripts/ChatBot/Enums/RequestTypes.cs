@@ -5,6 +5,7 @@
         Recommendation = 0,
         Search,
         History,
-        General
+        General,
+        Combo
     }
 }

@@ -13,7 +13,8 @@ namespace Common
         public int Price = -1;
         public ItemTag[] Tags;
         
-        public Range NumOfPlayers = ..0;
+        public int MinNumOfPlayers = 0;
+        public int MaxNumOfPlayers = Int32.MaxValue;
         public int AvgPlayTime = -1;
         public int MinimumAge = -1;
         

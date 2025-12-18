@@ -44,6 +44,22 @@ public class ItemCardGridView : MonoBehaviour
             i++;
         }
     }
+
+    public void ShowAll()
+    {
+        foreach (var (_, view) in _cardViews)
+        {
+            view.gameObject.SetActive(true);
+        }
+    }
+    
+    public void ShowFirstX(int x)
+    {
+        foreach (var (_, view) in _cardViews)
+        {
+            view.gameObject.SetActive(view.transform.GetSiblingIndex() < x);
+        }
+    }
     
     public void ApplyLikes(List<Item> likes, List<Item> dislikes)
     {

@@ -27,6 +27,9 @@ namespace Boot
         [SerializeField]
         private RegularExpressionsConfig _regularExpressionsConfig;
         
+        [SerializeField]
+        private TimeVarConfig _timeVarConfig;
+        
         private LikesService _likesService;
         private ItemDistanceWithLikes _itemDistanceWithLikes;
         private FiltersService _filtersService;
@@ -37,6 +40,7 @@ namespace Boot
             builder.RegisterInstance(_tagsTree);
             builder.RegisterInstance(_likesStorage);
             builder.RegisterInstance(_regularExpressionsConfig);
+            builder.RegisterInstance(_timeVarConfig);
             
             builder.RegisterComponentInHierarchy<LikesTabService>();
             builder.RegisterComponentInHierarchy<AdvancedHeatmapView>();

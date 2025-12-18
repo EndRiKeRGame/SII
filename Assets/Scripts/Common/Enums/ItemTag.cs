@@ -4,18 +4,18 @@
     {
         Категория = 0,
         
-        Стратегия,
+        Стратегия = 1,
         Семейная,
         Вечериночные,
         Хардкорная,
         Настольная_Ролевая_Игра,
-        RPG,
+        RPG = 6,
         
         
         Ужас_Аркхема,
         Живая_Карточная_Игра,
         Игра_по_Вселенной,
-        Ужас_Аркхема_Карточная_Игра,
+        Ужас_Аркхема_Карточная_Игра = 10,
         
         
         Gloomhaven,
@@ -24,7 +24,7 @@
         Dangeons_and_Dragons,
         Каркасон,
         Fallout,
-        Игра_Престолов,
+        Игра_Престолов = 16,
         
         Манчкин,
         Ticket_to_Ride,
@@ -35,13 +35,13 @@
         Подарочное_Издание,
         Семь_чудес,
         Мачи_Коро,
-        Бэнг,
+        Бэнг = 26,
         
     }
     
     public static class StringToTag
     {
-        public static ItemTag Convert(this string str)
+        public static ItemTag Convert(string str)
         {
             return (ItemTag)System.Enum.Parse(typeof(ItemTag), str);
         }
